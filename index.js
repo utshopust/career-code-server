@@ -53,6 +53,14 @@ async function run() {
       };
       const cursor = applicationsCollection.find(query);
       const result = await cursor.toArray();
+
+      // Bad Way to Aggregate Data from two collections
+      for(const application of result){
+        const jobId = application.jobId;
+        const job = await jobsCollection.findOne({_id: new ObjectId(jobId)});
+        application.jobDetails = job;
+      }
+
       res.send(result);
     });
 
